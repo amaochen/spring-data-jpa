@@ -209,8 +209,32 @@ public class UserRepositoryFinderTests {
 		User extra = new User("extra", "Matt_ew", "extra");
 		userRepository.save(extra);
 
-		List<User> result = userRepository.findContainingEscaped("att_");
-		assertThat(result, containsInAnyOrder(extra));
+		assertThat(userRepository.findContainingEscaped("att_"), contains(extra));
+	}
+
+	@Test // DATAJPA-1519
+	public void escapingInLikeSpelsInThePresenceOfEscapeCharacters() {
+
+		User withEscapeCharacter = new User("extra", "Matt\\xew", "extra1");
+		userRepository.save(withEscapeCharacter);
+
+		User withEscapedWildcard = new User("extra", "Matt\\_ew", "extra2");
+		userRepository.save(withEscapedWildcard);
+
+
+		assertThat(userRepository.findContainingEscaped("att\\x"), contains(withEscapeCharacter));
+	}
+
+	@Test // DATAJPA-1519
+	public void escapingInLikeSpelsInThePresenceOfEscapedWildcards() {
+
+		User withEscapeCharacter = new User("extra", "Matt\\xew", "extra1");
+		userRepository.save(withEscapeCharacter);
+
+		User withEscapedWildcard = new User("extra", "Matt\\_ew", "extra2");
+		userRepository.save(withEscapedWildcard);
+
+		assertThat(userRepository.findContainingEscaped("att\\_"), contains(withEscapedWildcard));
 	}
 
 	@Test // DATAJPA-829

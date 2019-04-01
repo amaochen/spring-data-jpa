@@ -32,7 +32,7 @@ import org.springframework.lang.Nullable;
 @Value(staticConstructor = "of")
 public class EscapeCharacter {
 
-	private static final List<String> TO_REPLACE = Arrays.asList("_", "%");
+	private static final List<String> TO_REPLACE = Arrays.asList("\\","_", "%");
 
 	char escapeCharacter;
 
@@ -43,7 +43,7 @@ public class EscapeCharacter {
 	 * @return
 	 */
 	@Nullable
-	public String escape(String value) {
+	public String escape(@Nullable String value) {
 
 		return value == null //
 				? null //
